@@ -44,6 +44,8 @@
 			fixed4 _MainColor;
 			int _RaysCount;
 			float _AnimationSpeed;
+
+			static const float2 UVOffset = float2(2,2);
 			
 			v2f vert (appdata v)
 			{
@@ -57,12 +59,14 @@
 			
 			fixed4 frag (v2f i) : SV_Target
 			{
-				float2 uv = i.uv - float2(1,1) * ((int) (_Time.w * _AnimationSpeed)) % _RaysCount;
-				if (length(uv) > 1.415f || uv.x + uv.y < 0) {
-					return fixed4(0,0,0,0);
-				}
+				float2 uv = i.uv - UVOffset * (round(_Time.w * _AnimationSpeed) % _RaysCount);
 				fixed4 col = tex2D(_MainTex, uv) * _MainColor;
 				UNITY_APPLY_FOG(i.fogCoord, col);
+
+				float componentsSum = uv.x + uv.y;
+				float alpha = step (0, componentsSum) * step (componentsSum, 2);
+				col.a = col.a * alpha;
+
 				return col;
 			}
 			ENDCG

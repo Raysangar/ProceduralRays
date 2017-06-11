@@ -4,6 +4,7 @@ using UnityEngine;
 public static class RayFactory {
   private static readonly List<Vector3> VertexNormalPerFace;
   private static readonly List<Vector2> BaseUVsPerVertex;
+  private static readonly Vector2 UVOffset;
 
   private const int RayFacesCount = 4;
   private const int RayVertexPerFace = 4;
@@ -63,6 +64,8 @@ public static class RayFactory {
       new Vector2 (1, 1)
     };
 
+    UVOffset = new Vector2 (2, 2);
+
     vertices = new List<Vector3> ();
     indices = new List<int> ();
     normals = new List<Vector3> ();
@@ -107,7 +110,7 @@ public static class RayFactory {
 
       for (int iVertex = 0; iVertex < RayVertexPerFace; ++iVertex) {
         normals.Add (VertexNormalPerFace[iFace]);
-        uvs.Add (BaseUVsPerVertex[iVertex] + Vector2.one * rayIndex);
+        uvs.Add (BaseUVsPerVertex[iVertex] + UVOffset * rayIndex);
       }
     }
   }
